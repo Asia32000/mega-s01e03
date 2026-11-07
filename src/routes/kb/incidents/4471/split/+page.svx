@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: Asia32000
 status: open
 reviewed: 2026-11-07
-signature: Asia32000
+signature: v1.eyJzdWIiOiI2ODUwIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTQwNTAwNTEsImV4cCI6MTc5NDEzNjQ1MX0.0Duc2zMgEV3HC8h6sAIqSEqNdSMR-7WIn4VVNUkRMKg
 ---
 
 <script>
