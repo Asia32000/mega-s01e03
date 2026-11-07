@@ -1,0 +1,74 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: Asia32000
+status: open
+reviewed: 2026-11-07
+signature: Asia32000
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked **known: one issue, one fix queued**. It is not one issue.
+Read report by report, the reports merged into it describe three different problems. The fix
+that is queued, a day-first parser, closes only the first one.
+
+<Callout kind="warn">
+Shipping the parser fix and closing #4471 leaves two problems open with no ticket of their own.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} />
+
+Every count above is computed when the page renders, from the ticket export
+(`reports-4471.json`), the tenant directory and the desk's notes (`desk-notes.json`). The
+export repeats some reports across its pages; each report id counts once.
+
+## The three problems
+
+### `parser`: the shared parser reads every date month first
+
+Every tenant on file writes the day first. The parser reads `07/04` as July 4th, and the
+booking moves to the mirrored date: *"Our 7 April reminder went out on 4 July."* It shows in
+every channel and at every tenant. This is the problem #4471 describes and the fix in the queue
+is for.
+
+### `hint`: booking-v3's form tells day-first people to type month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. The tenant's people do what the hint says,
+and the form then reads the date the tenant's way, day first. The month flips just as with the
+parser, so the reports read the same. But they come only through the form, only from tenants on
+booking-v3, and the parser fix does not touch them: the hint is wrong, not the parser.
+
+### `shift`: bookings move by one day, nothing is flipped
+
+The desk read these reports as a one-day move and noted them, but filed them under `parser` by
+tenant. They are not a flipped month: *"Invite says Tuesday 12 May. Calendar says Monday 11
+May."*, *"Every booking in June is one day off. Only June."*, *"Client in Lisbon got Tuesday.
+Client in Toronto got Monday. Same meeting."*, *"The invite arrived before I made the booking."*
+Same date, a different day for people in different time zones: a time-zone or
+midnight-conversion bug. A day-first parser leaves every one of them as it is.
+
+## Why they were merged
+
+- Intake tags each report from the reporter's browser, and the tag is a guess. The table shows
+  how often it disagrees with where the report belongs.
+- [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on the subject line alone, so
+  nobody reads the body. *Wrong day on the invite* fits all three problems.
+- `CauseTable` places a report by its tenant and channel. A one-day move from a day-first tenant
+  lands under `parser` even when the desk has noted it reads differently.
+
+## What changes
+
+- Each problem has its own ticket, linked in the table above, with the reports it covers.
+- The `parser` ticket is what #4471 was about. It closes when the parser fix ships.
+- The `hint` and `shift` tickets stay open after that: neither closes with the parser fix.
+- Read the body before you merge into a ticket marked known. A shared subject line is not a
+  shared cause.
+
+<RenderStamp {signature} />

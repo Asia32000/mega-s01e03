@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#4471 · three problems, not one · support kb</title>
+<style>
+:root { --bg: #fbfaf7; --fg: #1d1d1b; --muted: #6b6a66; --line: #e3e0d8; --accent: #2f6f5e; --warn: #b4501f; --warn-bg: #fbeee6; --note-bg: #eef5f2; --mono: ui-monospace, 'Cascadia Code', Menlo, monospace; }
+@media (prefers-color-scheme: dark) { :root { --bg: #171716; --fg: #ecebe6; --muted: #9c9a93; --line: #34332f; --accent: #6fbfa6; --warn: #f0905d; --warn-bg: #3a2418; --note-bg: #1d2c27; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, sans-serif; }
+.kb table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+.kb th, .kb td { border-bottom: 1px solid var(--line); padding: 0.35rem 0.5rem; text-align: left; vertical-align: top; }
+.kb code { font-family: var(--mono); font-size: 0.88em; }
+.kb a { color: var(--accent); }
+.kb { max-width: 760px; margin: 0 auto; padding: 2rem 16px 4rem; }
+.kb main { overflow-x: auto; }
+.crumb { font: 0.8rem var(--mono); text-decoration: none; color: var(--muted); }
+h1 { margin: 0.25rem 0 0.5rem; line-height: 1.2; }
+.meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; color: var(--muted); font-size: 0.85rem; margin: 0; }
+.status { border: 1px solid var(--line); border-radius: 99px; padding: 0 0.6rem; }
+.stale { color: var(--warn); font-weight: 600; }
+.banner { background: var(--warn-bg); color: var(--warn); padding: 0.6rem 1rem; border-radius: 6px; }
+footer { margin-top: 3rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+aside { border-left: 4px solid var(--accent); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--note-bg); }
+aside.warn { border-color: var(--warn); background: var(--warn-bg); }
+aside p { margin: 0; }
+.sum { font-size: 1.1rem; }
+.what, .small { color: var(--muted); font-size: 0.85em; }
+.none { color: var(--warn); font-weight: 600; }
+.stamp { margin: 2rem 0 0; font: 0.85rem var(--mono); color: var(--muted); }
+.stamp b { color: var(--accent); letter-spacing: 0.04em; }
+.stamp.missing { color: var(--warn); }
+</style>
+</head>
+<body>
+<div class="kb">
+  <header>
+    <a class="crumb" href="/kb">support desk · kb</a>
+    <h1>#4471 · three problems, not one</h1>
+    <p class="meta">
+      <span>owner <b>Asia32000</b></span>
+      <span class="status open">open</span>
+      <span>reviewed 2026-11-07 · 0 days ago</span>
+    </p>
+  </header>
+  
+  <main>
+<p><a href="/kb/incidents/4471">#4471</a> is marked <strong>known: one issue, one fix queued</strong>. It is not one issue.
+Read report by report, the reports merged into it describe three different problems. The fix
+that is queued, a day-first parser, closes only the first one.</p>
+<aside class="warn"><p>Shipping the parser fix and closing #4471 leaves two problems open with no ticket of their own.</p>
+</aside><h2>What #4471 holds</h2>
+<p class="sum"><strong>412</strong> reports merged into #4471 · <strong>3</strong> problems</p>
+<table><thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>channels</th><th>intake tagged</th><th>seen</th><th>ticket</th></tr></thead><tbody>
+<tr><td><code>parser</code><br><span class="what">Shared parser reads day-first dates month first</span></td><td><strong>374</strong></td><td>11</td><td class="small">app ×202 · email ×147 · form ×25</td><td class="small">parser ×351 · hint ×23</td><td class="small">2026-04-01 → 2026-10-04</td><td><a href="https://github.com/Asia32000/mega-s01e03/issues/1">Asia32000/mega-s01e03#1</a></td></tr>
+<tr><td><code>hint</code><br><span class="what">booking-v3 form hint says MM/DD/YYYY to day-first tenants</span></td><td><strong>33</strong></td><td>3</td><td class="small">form ×33</td><td class="small">hint ×18 · parser ×15</td><td class="small">2026-04-17 → 2026-09-22</td><td><a href="https://github.com/Asia32000/mega-s01e03/issues/2">Asia32000/mega-s01e03#2</a></td></tr>
+<tr><td><code>shift</code><br><span class="what">Bookings move by one day (time zone), no month flip</span></td><td><strong>5</strong></td><td>5</td><td class="small">email ×3 · app ×2</td><td class="small">parser ×5</td><td class="small">2026-04-02 → 2026-10-04</td><td><a href="https://github.com/Asia32000/mega-s01e03/issues/3">Asia32000/mega-s01e03#3</a></td></tr>
+</tbody></table><p>Every count above is computed when the page renders, from the ticket export
+(<code>reports-4471.json</code>), the tenant directory and the desk&#39;s notes (<code>desk-notes.json</code>). The
+export repeats some reports across its pages; each report id counts once.</p>
+<h2>The three problems</h2>
+<h3><code>parser</code>: the shared parser reads every date month first</h3>
+<p>Every tenant on file writes the day first. The parser reads <code>07/04</code> as July 4th, and the
+booking moves to the mirrored date: <em>&quot;Our 7 April reminder went out on 4 July.&quot;</em> It shows in
+every channel and at every tenant. This is the problem #4471 describes and the fix in the queue
+is for.</p>
+<h3><code>hint</code>: booking-v3&#39;s form tells day-first people to type month first</h3>
+<p>booking-v3 prints <code>MM/DD/YYYY</code> under its date field. The tenant&#39;s people do what the hint says,
+and the form then reads the date the tenant&#39;s way, day first. The month flips just as with the
+parser, so the reports read the same. But they come only through the form, only from tenants on
+booking-v3, and the parser fix does not touch them: the hint is wrong, not the parser.</p>
+<h3><code>shift</code>: bookings move by one day, nothing is flipped</h3>
+<p>The desk read these reports as a one-day move and noted them, but filed them under <code>parser</code> by
+tenant. They are not a flipped month: <em>&quot;Invite says Tuesday 12 May. Calendar says Monday 11
+May.&quot;</em>, <em>&quot;Every booking in June is one day off. Only June.&quot;</em>, <em>&quot;Client in Lisbon got Tuesday.
+Client in Toronto got Monday. Same meeting.&quot;</em>, <em>&quot;The invite arrived before I made the booking.&quot;</em>
+Same date, a different day for people in different time zones: a time-zone or
+midnight-conversion bug. A day-first parser leaves every one of them as it is.</p>
+<h2>Why they were merged</h2>
+<ul>
+<li>Intake tags each report from the reporter&#39;s browser, and the tag is a guess. The table shows
+how often it disagrees with where the report belongs.</li>
+<li><a href="/kb/decisions/0001-dedupe-by-subject">Decision 0001</a> merges on the subject line alone, so
+nobody reads the body. <em>Wrong day on the invite</em> fits all three problems.</li>
+<li><code>CauseTable</code> places a report by its tenant and channel. A one-day move from a day-first tenant
+lands under <code>parser</code> even when the desk has noted it reads differently.</li>
+</ul>
+<h2>What changes</h2>
+<ul>
+<li>Each problem has its own ticket, linked in the table above, with the reports it covers.</li>
+<li>The <code>parser</code> ticket is what #4471 was about. It closes when the parser fix ships.</li>
+<li>The <code>hint</code> and <code>shift</code> tickets stay open after that: neither closes with the parser fix.</li>
+<li>Read the body before you merge into a ticket marked known. A shared subject line is not a
+shared cause.</li>
+</ul>
+<p class="stamp">desk ref <b>DR-C09Y-PKMT</b></p>
+  </main>
+  <footer>Pages are written by people. Tables and charts are built from data at render time.</footer>
+</div>
+</body>
+</html>
